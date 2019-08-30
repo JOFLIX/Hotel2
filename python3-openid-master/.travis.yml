@@ -1,0 +1,58 @@
+language: python
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+
+python:
+  - 3.5
+  - 3.6
+  - pypy3
+
+env:
+  global:
+    - TEST_DB_HOST=localhost
+    - TEST_MYSQL_USER=root
+    - TEST_POSTGRES_USER=postgres
+  matrix:
+    - TOX_ENV=py33
+    - TOX_ENV=py34
+    - TOX_ENV=py35
+    - TOX_ENV=py36
+    - TOX_ENV=pypy3
+
+matrix:
+  allow_failures:
+    - python: pypy3
+      env: TOX_ENV=pypy3
+  exclude:
+    - python: 3.5
+      env: TOX_ENV=py33
+    - python: 3.5
+      env: TOX_ENV=py34
+    - python: 3.5
+      env: TOX_ENV=py36
+    - python: 3.5
+      env: TOX_ENV=pypy3
+    - python: pypy3
+      env: TOX_ENV=py33
+    - python: pypy3
+      env: TOX_ENV=py34
+    - python: pypy3
+      env: TOX_ENV=py35
+    - python: pypy3
+      env: TOX_ENV=py36
+    - python: 3.6
+      env: TOX_ENV=py35
+    - python: 3.6
+      env: TOX_ENV=pypy3
+
+install:
+  - pip install tox
+
+script:
+  - tox -e $TOX_ENV
+
+after_success:
+  - coveralls
